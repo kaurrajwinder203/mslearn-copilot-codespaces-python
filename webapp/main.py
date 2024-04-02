@@ -1,3 +1,4 @@
+import hashlib
 import os
 import base64
 from typing import Union
@@ -35,3 +36,26 @@ def generate(body: Body):
     """
     string = base64.b64encode(os.urandom(64))[:body.length].decode('utf-8')
     return {'token': string}
+
+""" 
+Create an pydantic model for Text, which has a single attribute text of type str.
+"""
+
+
+class Text(BaseModel):
+    text: str
+
+
+# Create a FastAPI endpoint that accepts a POST request with a JSON body containing a single field called "text" and returns a checksum of the text. The endpoint should be /docs. Write the function that returns the checksum of the text.
+
+
+@app.post('/docs')
+def docs(text: str):
+    """
+    return a checksum of field 'text'. Example POST request body:
+
+    {
+        "checksum": 3b8b91c75627bee566dcb88f4805901b20a3eab2520bcff8d26c87157a035026
+    }
+    """
+    return {'checksum': hashlib.sha256(text.encode('utf-8')).hexdigest()}
